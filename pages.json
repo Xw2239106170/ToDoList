@@ -1,0 +1,56 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "今日专注",
+				"navigationStyle": "custom",
+				"navigationBarBackgroundColor": "#F2F2F7",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/focus/index",
+			"style": {
+				"navigationBarTitleText": "专注中",
+				"navigationBarBackgroundColor": "#F2F2F7",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/stats/index",
+			"style": {
+				"navigationBarTitleText": "专注统计",
+				"navigationBarBackgroundColor": "#F2F2F7",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/settings/index",
+			"style": {
+				"navigationBarTitleText": "专注设置",
+				"navigationBarBackgroundColor": "#F2F2F7",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/task/edit",
+			"style": {
+				"navigationBarTitleText": "任务编辑",
+				"navigationBarBackgroundColor": "#F2F2F7",
+				"navigationBarTextStyle": "black"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "Pomodoro Todo",
+		"navigationBarBackgroundColor": "#F2F2F7",
+		"backgroundColor": "#F2F2F7"
+	},
+	"uniIdRouter": {}
+}
