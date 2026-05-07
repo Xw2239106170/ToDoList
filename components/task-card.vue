@@ -3,11 +3,7 @@
 		<view class="task-cover">
 			<view class="task-cover-main">
 				<view class="task-copy">
-					<view class="badge-row">
-						<text v-if="task.todayFlag" class="state-badge">今日</text>
-						<text v-if="task.status === 'DONE'" class="state-badge success">完成</text>
-						<text class="state-badge priority-badge" :class="priorityClass">{{ priorityLabel }}</text>
-					</view>
+					<text class="task-kicker">{{ kickerText }}</text>
 					<text class="task-title">{{ task.title }}</text>
 					<text class="task-subline">{{ metaLine }}</text>
 				</view>
@@ -35,25 +31,36 @@
 			cardIndex: {
 				type: Number,
 				default: 0
-			},
-			canMoveUp: {
-				type: Boolean,
-				default: true
-			},
-			canMoveDown: {
-				type: Boolean,
-				default: true
 			}
 		},
 		computed: {
 			dueLabel() {
 				return formatDueDate(this.task.dueDate)
 			},
-			metaLine() {
-				if (this.task.durationMinutes) {
-					return this.task.durationMinutes + ' 分钟'
+			kickerText() {
+				const parts = []
+				if (this.task.status === 'DONE') {
+					parts.push('已完成')
+				} else if (this.task.todayFlag) {
+					parts.push('今日待办')
 				}
-				return this.task.note || this.dueLabel
+				parts.push(this.priorityLabel)
+				return parts.join(' · ')
+			},
+			metaLine() {
+				const parts = []
+				if (this.task.durationMinutes) {
+					parts.push(this.task.durationMinutes + ' 分钟')
+				}
+				if (this.task.dueDate) {
+					parts.push(this.dueLabel)
+				} else if (this.task.note) {
+					parts.push(this.task.note)
+				}
+				if (!parts.length && this.task.category) {
+					parts.push(this.task.category)
+				}
+				return parts.join(' · ') || '点击卡片可编辑任务详情'
 			},
 			priorityLabel() {
 				return {
@@ -91,42 +98,42 @@
 	}
 
 	.task-card + .task-card {
-		margin-top: 34rpx;
+		margin-top: 42rpx;
 	}
 
 	.task-card.selected {
-		transform: translateY(-2rpx);
+		transform: translateY(-4rpx);
 	}
 
 	.task-card.done {
-		opacity: 0.82;
+		opacity: 0.84;
 	}
 
 	.task-cover {
 		position: relative;
 		overflow: hidden;
-		min-height: 212rpx;
-		border-radius: 32rpx;
-		box-shadow: 0 18rpx 40rpx rgba(15, 23, 42, 0.14);
+		min-height: 228rpx;
+		border-radius: 36rpx;
+		box-shadow: 0 20rpx 44rpx rgba(15, 23, 42, 0.14);
 	}
 
 	.task-cover::before {
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(90deg, rgba(5, 18, 42, 0.34), rgba(5, 18, 42, 0.12) 52%, rgba(5, 18, 42, 0.08));
+		background: linear-gradient(90deg, rgba(7, 18, 40, 0.36), rgba(7, 18, 40, 0.14) 54%, rgba(7, 18, 40, 0.06));
 	}
 
 	.task-cover::after {
 		content: '';
 		position: absolute;
-		right: -26rpx;
-		top: -18rpx;
-		width: 210rpx;
-		height: 210rpx;
+		right: -14rpx;
+		top: -28rpx;
+		width: 240rpx;
+		height: 240rpx;
 		border-radius: 50%;
-		background: rgba(255, 255, 255, 0.16);
-		filter: blur(8rpx);
+		background: rgba(255, 255, 255, 0.15);
+		filter: blur(12rpx);
 	}
 
 	.task-cover-main {
@@ -135,75 +142,43 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		min-height: 212rpx;
-		padding: 28rpx 30rpx;
+		min-height: 228rpx;
+		padding: 30rpx 34rpx;
 	}
 
 	.task-copy {
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
-		min-height: 138rpx;
-		padding-right: 20rpx;
-	}
-
-	.badge-row {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 10rpx;
-	}
-
-	.state-badge {
-		display: inline-flex;
-		align-items: center;
 		justify-content: center;
-		height: 40rpx;
-		padding: 0 16rpx;
-		border-radius: 999rpx;
-		background: rgba(255, 255, 255, 0.18);
-		border: 1rpx solid rgba(255, 255, 255, 0.16);
-		font-size: 20rpx;
+		min-height: 156rpx;
+		padding-right: 30rpx;
+	}
+
+	.task-kicker {
+		display: block;
+		font-size: 22rpx;
 		font-weight: 600;
-		color: rgba(255, 255, 255, 0.95);
-	}
-
-	.state-badge.success {
-		background: rgba(52, 199, 89, 0.24);
-		border-color: rgba(52, 199, 89, 0.18);
-	}
-
-	.state-badge.priority-badge.HIGH {
-		background: rgba(255, 59, 48, 0.22);
-		border-color: rgba(255, 59, 48, 0.2);
-	}
-
-	.state-badge.priority-badge.MEDIUM {
-		background: rgba(255, 159, 10, 0.24);
-		border-color: rgba(255, 159, 10, 0.2);
-	}
-
-	.state-badge.priority-badge.LOW {
-		background: rgba(52, 199, 89, 0.2);
-		border-color: rgba(52, 199, 89, 0.18);
+		letter-spacing: 0.4rpx;
+		color: rgba(255, 255, 255, 0.84);
 	}
 
 	.task-title {
 		display: block;
-		margin-top: 16rpx;
-		font-size: 34rpx;
+		margin-top: 18rpx;
+		font-size: 36rpx;
 		font-weight: 700;
-		line-height: 1.35;
+		line-height: 1.32;
 		color: #ffffff;
-		text-shadow: 0 6rpx 18rpx rgba(0, 0, 0, 0.2);
+		text-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.22);
 	}
 
 	.task-subline {
 		display: block;
-		margin-top: 22rpx;
+		margin-top: 24rpx;
 		font-size: 24rpx;
 		line-height: 1.55;
-		color: rgba(255, 255, 255, 0.9);
+		color: rgba(255, 255, 255, 0.92);
 		text-shadow: 0 6rpx 18rpx rgba(0, 0, 0, 0.18);
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -215,56 +190,56 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		min-width: 120rpx;
-		padding-left: 18rpx;
+		min-width: 132rpx;
+		padding-left: 16rpx;
 	}
 
 	.start-text {
-		font-size: 32rpx;
+		font-size: 40rpx;
 		font-weight: 700;
 		color: #ffffff;
-		text-shadow: 0 8rpx 18rpx rgba(0, 0, 0, 0.24);
+		text-shadow: 0 10rpx 22rpx rgba(0, 0, 0, 0.24);
 	}
 
 	.theme-0 .task-cover {
 		background:
-			radial-gradient(circle at 78% 38%, rgba(255, 220, 230, 0.95), rgba(255, 220, 230, 0) 10%),
-			linear-gradient(135deg, #1e4e88 0%, #3f7cc5 52%, #72a8ef 100%);
+			radial-gradient(circle at 68% 42%, rgba(255, 123, 150, 0.96), rgba(255, 123, 150, 0.18) 7%, rgba(255, 123, 150, 0) 12%),
+			linear-gradient(135deg, #1e5d9e 0%, #3f8bd7 52%, #74b5ee 100%);
 	}
 
 	.theme-1 .task-cover {
 		background:
-			radial-gradient(circle at 74% 24%, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 12%),
-			linear-gradient(180deg, #6b6ea9 0%, #51486e 48%, #14172e 100%);
+			radial-gradient(circle at 70% 22%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 14%),
+			linear-gradient(180deg, #7d82be 0%, #57517d 42%, #15172f 100%);
 	}
 
 	.theme-2 .task-cover {
 		background:
-			radial-gradient(circle at 24% 28%, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 16%),
-			linear-gradient(135deg, #6bc8c4 0%, #8fd0d0 44%, #cde6dc 100%);
+			radial-gradient(circle at 26% 26%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 16%),
+			linear-gradient(135deg, #75d5d0 0%, #8ddfd9 42%, #caece3 100%);
 	}
 
 	.theme-3 .task-cover {
 		background:
-			radial-gradient(circle at 40% 74%, rgba(255, 183, 206, 0.26), rgba(255, 183, 206, 0) 18%),
-			linear-gradient(135deg, #9287d7 0%, #9f91d9 36%, #d0b9db 100%);
+			radial-gradient(circle at 42% 74%, rgba(255, 183, 206, 0.26), rgba(255, 183, 206, 0) 18%),
+			linear-gradient(135deg, #a397e8 0%, #b19ee6 38%, #ddc2e7 100%);
 	}
 
 	.theme-4 .task-cover {
 		background:
-			radial-gradient(circle at 76% 42%, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 12%),
-			linear-gradient(135deg, #b9d8ef 0%, #c8e3f9 56%, #e0eefc 100%);
+			radial-gradient(circle at 76% 40%, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 12%),
+			linear-gradient(135deg, #bfe0f4 0%, #d4ecfa 56%, #ecf6ff 100%);
 	}
 
 	.theme-5 .task-cover {
 		background:
 			radial-gradient(circle at 58% 64%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 14%),
-			linear-gradient(135deg, #5674a4 0%, #758db6 38%, #adbcd6 100%);
+			linear-gradient(135deg, #5b7caf 0%, #7c97c1 38%, #b7c7df 100%);
 	}
 
 	.theme-6 .task-cover {
 		background:
 			radial-gradient(circle at 68% 32%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 14%),
-			linear-gradient(135deg, #cdb58a 0%, #dec9a2 48%, #efe0c6 100%);
+			linear-gradient(135deg, #d8bf95 0%, #ead2ad 48%, #f4e4cc 100%);
 	}
 </style>
